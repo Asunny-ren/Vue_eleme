@@ -122,7 +122,8 @@
           let diff = this.minPrice - this.totalPrice
           return `还差${diff}元起送`
         }else {
-          return '去结算'
+          let total = this.totalPrice + this.deliveryPrice;
+          return `去结算 ${total}元`
         }
       },
       payClass () {
