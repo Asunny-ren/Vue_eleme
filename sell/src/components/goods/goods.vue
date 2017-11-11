@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="goods">
-      <div class="menu-wrapper" ref="menu-wrapper">
+      <div class="menu-wrapper" ref="menuWrapper">
         <ul>
           <li class="menu-item" v-for="(item,key) in goods" :class="{'current':currentIndex===key}"
               @click="selectMenu(key, $event)" :key="item.id">
@@ -11,9 +11,9 @@
           </li>
         </ul>
       </div>
-      <div class="foods-wrapper" ref="food-wrapper">
+      <div class="foods-wrapper" ref="foodWrapper">
         <ul>
-          <li v-for="item in goods" class="food-list food-list-hook" :key="item.id">
+          <li v-for="(item, index) in goods" class="food-list food-list-hook" :key="index">
             <h1 class="title">{{item.name}}</h1>
             <ul>
               <li @click="selectFood(food,$event)" v-for="food in item.foods" class="food-item border-1px" :key="food.id">
@@ -27,11 +27,10 @@
                     <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}%</span>
                   </div>
                   <div class="price">
-                    <span class="now">¥{{food.price}}</span><span class="old"
-                                                                  v-show="food.oldPrice">¥{{food.oldPrice}}</span>
+                    <span class="now">¥{{food.price}}</span><span class="old" v-show="food.oldPrice">¥{{food.oldPrice}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
-                    <cartcontrol :food="food"></cartcontrol>
+                    <cartcontrol :food="food" @add="addCart"></cartcontrol>
                   </div>
                 </div>
               </li>
@@ -41,7 +40,7 @@
       </div>
       <shopcart ref="shopCart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
     </div>
-    <food :food="selectedFood" ref="food"></food>
+    <food @add="addFood" :food="selectedFood" ref="food"></food>
   </div>
 </template>
 
@@ -107,36 +106,42 @@
         if (!event._constructed) {
           return
         }
-        let foodList = this.$refs['food-wrapper'].getElementsByClassName('food-list-hook')
+        let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook')
         let el = foodList[index]
-        this.foodScroll.scrollToElement(el, 300)
+        this.foodsScroll.scrollToElement(el, 300)
       },
       selectFood (food, event) {
         if  (!event._constructed) {
           return;
         }
         this.selectedFood = food;
-        this.$refs['food'].show();
+        this.$refs.food.show();
+      },
+      addFood(target) {
+        this._drop(target);
       },
       _drop (target) {
-        this.$refs['shop-cart'].drop(target)
+        // 体验优化
+        this.$nextTick(() => {
+          this.$refs.shopCart.drop(target);
+        })
       },
       _initScroll() {
-        this.menuScroll = new BScroll(this.$refs['menu-wrapper'], {
+        this.menuScroll = new BScroll(this.$refs.menuWrapper, {
           click: true
         });
 
-        this.foodScroll = new BScroll(this.$refs['food-wrapper'], {
+        this.foodsScroll = new BScroll(this.$refs.foodWrapper, {
           click: true,
           probeType: 3
         });
 
-        this.foodScroll.on('scroll', (pos) => {
+        this.foodsScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y))
         })
       },
       _calculateHeight() {
-        let foodList = this.$refs['food-wrapper'].getElementsByClassName('food-list-hook')
+        let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook')
         let height = 0
         this.listHeight.push(height)
         for (let i = 0; i < foodList.length; i++) {
@@ -144,17 +149,15 @@
           height += item.clientHeight
           this.listHeight.push(height)
         }
+      },
+      addCart (target) {
+        this._drop(target);
       }
     },
     components: {
       shopcart,
       cartcontrol,
       food
-    },
-    events: {
-      'cart.add' (target) {
-        this._drop(target)
-      }
     }
   }
 </script>

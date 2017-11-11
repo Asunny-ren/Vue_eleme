@@ -15,19 +15,23 @@ import 'common/stylus/index.styl'
 Vue.use(VueRouter)
 Vue.use(VueResource)
 
+const routes = [
+  { path: '/', component: goods },
+  { path: '/goods', component: goods },
+  { path: '/ratings', component: ratings },
+  { path: '/seller', component: seller }
+]
+
 const router = new VueRouter({
-  routes: [
-  	{ path: '/', component: goods },
-    { path: '/goods', component: goods },
-    { path: '/ratings', component: ratings },
-    { path: '/seller', component: seller }
-  ]
+  linkActiveClass: 'active',
+  routes
 })
 
 const app = new Vue({
   el: '#app',
   router,
-  template: '<App/>',
+  // template: '<App/>',
+  render: h => h(App),
   components: { App },
   data () {
     return {

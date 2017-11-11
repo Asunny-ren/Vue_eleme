@@ -25,7 +25,7 @@
 					</div>
 				</div>
 				<split></split>
-				<ratingselect :select-type="selectType" :only-content="onlyContent" :ratings="ratings"></ratingselect>
+				<ratingselect @select="selelctRating" @toggle="toggleContent" :select-type="selectType" :only-content="onlyContent" :ratings="ratings"></ratingselect>
 				<div class="rating-wrapper">
 					<ul>
 						<li v-for="rating in ratings" v-show="needShow(rating.rateType, rating.text)" class="rating-item" :key="rating.id">
@@ -88,22 +88,18 @@
 					})
 				}
 			})
-			this.$root.eventHub.$on('ratingtype.select', this.ratingtypeSelect);
-      this.$root.eventHub.$on('content.toggle', this.contentToggle);
+			this.$emit('select', this.ratingtypeSelect);
+      this.$emit('toggle');
 		},
-		beforeDestroy () {
-      this.$root.eventHub.$off('ratingtype.select', this.ratingtypeSelect)
-      this.$root.eventHub.$off('content.toggle', this.contentToggle)
-    },
 		methods: {
-			'ratingtype.select' (type) {
+			selelctRating (type) {
         this.selectType = type;
         this.$nextTick(() => {
           this.scroll.refresh();
         })
       },
-      'content.toggle' (onlyContent) {
-        this.onlyContent = onlyContent;
+      toggleContent (onlyContent) {
+        this.onlyContent = !this.onlyContent;
         this.$nextTick(() => {
           this.scroll.refresh();
         })
@@ -133,7 +129,7 @@
 	}
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus">
+<style lang="stylus" rel="stylesheet/stylus" scoped>
 	@import "../../common/stylus/mixin.styl"
 
 	.ratings

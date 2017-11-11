@@ -29,7 +29,7 @@
         }else {
           this.food.count++
         }
-        // this.$dispatch('cart.add', event.target)
+        this.$emit('add', event.target)
       },
       decreaseCart (event) {
         if(!event._constructed){
@@ -47,7 +47,7 @@
     .cart-decrease
       display: inline-block
       padding: 6px
-      transition: all 0.2s linear
+      transition: all 0.4s linear
       opacity: 1
       transform: translate3d(0, 0, 0)
       .inner
@@ -55,9 +55,11 @@
         line-height: 24px
         font-size: 24px
         color: rgb(0, 160, 220)
-        transition: all 0.2s linear
+        transition: all 0.4s linear
         transform: rotate(0)
       &.move-leave-active,  &.move-enter-active
+        transition: all 0.2s linear
+      &.move-enter
         opacity: 0
         transform: translate3d(24px, 0, 0)
         .inner

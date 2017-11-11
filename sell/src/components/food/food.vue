@@ -33,7 +33,7 @@
         <split></split>
         <div class="ratings">
           <h1 class="title">商品评价</h1>
-          <ratingselect border-1px :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
+          <ratingselect @select="selelctRating" @toggle="toggleContent" class="border-1px" :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
           <div class="rating-wrapper">
             <ul v-show="food.ratings && food.ratings.length">
               <li v-show="needShow(rating.rateType,rating.text)" v-for="rating in food.ratings" class="rating-item border-1px" :key="rating.id">
@@ -83,14 +83,6 @@
         }
       }
     },
-    created () {
-      this.$root.eventHub.$on('ratingtype.select', this.ratingtypeSelect);
-      this.$root.eventHub.$on('content.toggle', this.contentToggle);
-    },
-    beforeDestroy () {
-      this.$root.eventHub.$off('ratingtype.select', this.ratingtypeSelect)
-      this.$root.eventHub.$off('content.toggle', this.contentToggle)
-    },
     methods: {
       show () {
         this.showFlag = true;
@@ -113,7 +105,7 @@
         if(!event._constructed) {
           return;
         }
-        // this.$root.eventHub.$emit('cart.add', event.target);
+        this.$emit('add', event.target);
         Vue.set(this.food, 'count', 1);
       },
       needShow (type, text) {
@@ -126,14 +118,14 @@
           return type === this.selectType;
         }
       },
-      'ratingtype.select' (type) {
+      selelctRating (type) {
         this.selectType = type;
         this.$nextTick(() => {
           this.scroll.refresh();
         })
       },
-      'content.toggle' (onlyContent) {
-        this.onlyContent = onlyContent;
+      toggleContent (onlyContent) {
+        this.onlyContent = !this.onlyContent;
         this.$nextTick(() => {
           this.scroll.refresh();
         })

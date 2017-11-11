@@ -61,15 +61,13 @@
         if(!event._constructed) {
           return;
         }
-        this.selectType = type;
-        eventHub.$emit('ratingtype.select', type);
+        this.$emit('select', type);
       },
       toggleContent (event) {
         if(!event._constructed) {
           return;
         }
-        this.onlyContent = !this.onlyContent;
-        eventHub.$emit('content.toggle', this.onlyContent);
+        this.$emit('toggle');
       }
     }
   }
@@ -111,8 +109,8 @@
       border-bottom: 1px solid rgba(7, 17, 27, 0.1)
       color: rgb(147, 153, 159)
       font-size: 0
-      &.on
-        .icon-check_circle
+      .icon-check_circle
+        &.on
           color: #00c850
       .icon-check_circle
         display: inline-block
