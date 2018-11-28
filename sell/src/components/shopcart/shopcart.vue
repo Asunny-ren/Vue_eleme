@@ -391,7 +391,6 @@
     left: 0
     width: 100%
     height: 100%
-    height: 100%
     z-index: 40
     backdrop-filter: blur(10px)
     opacity: 1

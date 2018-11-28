@@ -57,7 +57,7 @@
 
 <script type="text/ecmascript-6">
   import BScroll from "better-scroll";
-  import Vue from "vue"
+  import Vue from "vue";
   import {formatDate} from "common/js/date";
   import cartcontrol from "components/cartcontrol/cartcontrol"
   import ratingselect from "components/ratingselect/ratingselect"
